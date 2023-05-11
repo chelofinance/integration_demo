@@ -3,10 +3,11 @@ import Image from "next/image";
 import clsx from "clsx";
 import {ClipboardCopyIcon, ExternalLinkIcon} from "@heroicons/react/solid";
 import {ChevronDownIcon} from "@heroicons/react/solid";
+import {metamaskConnection} from "@helpers/connection";
 
 import WalletModal from "@shared/components/common/WalletModal";
 import Tooltip from "@shared/components/common/Tooltip";
-import {onSwitchNetwork, onDisconnectWallet} from "@redux/actions";
+import {onSwitchNetwork, onDisconnectWallet, onConnectWallet} from "@redux/actions";
 import {useAppSelector, useAppDispatch} from "@redux/store";
 import EthAddress from "@shared/components/common/EthAddress";
 import Popover from "@shared/components/common/Popover";
@@ -18,12 +19,18 @@ import {useWeb3React} from "@web3-react/core";
 import {networkConfigs} from "@helpers/network";
 import {formatAddress} from "@helpers/index";
 import {useRole} from "@shared/hooks/daos";
+import {isAddress} from "ethers/lib/utils";
 
 export interface EthIdenticonProps {
   className?: string;
 }
 
-const mappedNetworkConfigs = Object.entries(networkConfigs);
+const {hardhat, ethereum, goerli, mumbai, ...productionConfigs} = networkConfigs;
+const NETWORKS = Object.entries(
+  process.env.NEXT_PUBLIC_PRODUCTION === "false"
+    ? {hardhat, mumbai, polygon: productionConfigs.polygon}
+    : productionConfigs
+);
 
 const nonConnectedSettings = {
   chainId: 0,
@@ -38,7 +45,7 @@ export const EthAccount: React.FunctionComponent<EthIdenticonProps> = (props) =>
   const [changeWallet, setChangeWallet] = React.useState(false);
   const {networkId, wallet, address} = useAppSelector((state) => state.user.account);
   const {talent, alumni, sponsor} = useRole();
-  const {connector} = useWeb3React();
+  const {connector, account, isActive, chainId} = useWeb3React();
   const dispatch = useAppDispatch();
 
   const {settings} = networkId ? getNetworkConfig(networkId) : {settings: nonConnectedSettings};
@@ -46,7 +53,9 @@ export const EthAccount: React.FunctionComponent<EthIdenticonProps> = (props) =>
 
   const handleNetworkChange = (networkId: SupportedNetworks) => async () => {
     try {
-      await dispatch(onSwitchNetwork({networkId, connector})); //rinkeby
+      await metamaskConnection.connector.activate();
+      await dispatch(onSwitchNetwork({networkId, connector}));
+      console.log("final");
     } catch (err) {
       console.log({networkChangeError: err});
     }
@@ -67,14 +76,25 @@ export const EthAccount: React.FunctionComponent<EthIdenticonProps> = (props) =>
   };
   const roleInfo = getRoleInfo();
 
+  React.useEffect(() => {
+    if (!isAddress(account) || !isActive) return;
+    dispatch(
+      onConnectWallet({
+        connection: metamaskConnection.connector,
+        chainId: networkId,
+        account,
+      })
+    );
+  }, [account, isActive, chainId]);
+
   return (
     <div className={clsx("flex gap-3 text-black", className)}>
       <MenuDropdown
         title="Available networks"
-        options={mappedNetworkConfigs.map(([entry, config]) => ({
+        options={NETWORKS.map(([entry, config]) => ({
           content: (
             <div
-              className="w-full flex justify-between"
+              className="w-full flex justify-between cursor-pointer"
               onClick={handleNetworkChange(config.settings.chainId)}
             >
               <Image src={config.settings.logo} alt="me" width="20" height="20" />

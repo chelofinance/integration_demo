@@ -34,6 +34,7 @@ export const onConnectWallet = createAsyncThunk<
 >(actionTypes.CONNECT_WALLET, async (args, {rejectWithValue, dispatch}) => {
   let {connection, account, chainId} = args;
 
+  console.log("connect network");
   return {
     erc20: [],
     erc721: [],

@@ -29,7 +29,7 @@ export const MenuDropdown: React.FunctionComponent<MenuDropdownProps> = (props) 
       >
         <Menu.Items
           className={clsx(
-            "absolute z-30 right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md bg-purple-400 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
+            "absolute z-30 right-0 mt-2 w-56 origin-top-right divide-y divide-gray-100 rounded-md shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none",
             classes?.menu
           )}
         >
@@ -37,7 +37,7 @@ export const MenuDropdown: React.FunctionComponent<MenuDropdownProps> = (props) 
             {title && (
               <>
                 <span className="text-md text-gray-400 ml-2 mb-2 block">{title}</span>
-                <div className="border-b border-black opacity-30"></div>
+                <div className="border-b border-gray-200 opacity-30"></div>
               </>
             )}
             {options.map((opt, i) => (
@@ -47,7 +47,7 @@ export const MenuDropdown: React.FunctionComponent<MenuDropdownProps> = (props) 
                     key={i}
                     className={clsx(
                       "w-full py-2 px-4",
-                      `${active ? "bg-purple-600 text-white" : "bg-purple-400 text-white"}`,
+                      `${active ? "bg-stone-200" : "bg-stone-100"}`,
                       classes?.items
                     )}
                   >
