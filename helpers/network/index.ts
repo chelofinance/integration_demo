@@ -6,6 +6,7 @@ type NetworkConfig = {
     factory: string;
     registry: string;
     token: string;
+    comp: string;
     timelock: string;
     govBravo: string;
   };
@@ -42,6 +43,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       factory: "",
       registry: "",
       token: "",
+      comp: "",
       timelock: "",
       govBravo: "",
     },
@@ -72,6 +74,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       factory: "",
       registry: "",
       token: "",
+      comp: "",
       timelock: "",
       govBravo: "",
     },
@@ -103,6 +106,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       factory: "",
       registry: "",
       token: "",
+      comp: "",
       timelock: "",
       govBravo: "",
     },
@@ -132,6 +136,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       factory: "0x5f1D6Ba74321C546E5ed955660BA383938f9905D",
       registry: "0x55d3008DD56071fCAe59F7794a4b7959ac72d4A6",
       token: "0x9Ad26c5eDF599F5F60D6686a1124cc93b4F58969",
+      comp: "",
       timelock: "0x57077Baf230e8858b72DE157Eca70Ae470b1A2a8",
       govBravo: "0x67581Bab896B319175657286F906deD8762B09C6",
     },
@@ -162,6 +167,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       factory: "0x066A4d1528B97AD6ECB72FD623302Ed25Df50732",
       registry: "0xDE3cA147D00D8f345Be4fF01EC17a96D77a1a56C",
       token: "0x0c4B7c58B796b4Ad53A1471d24d0848617D689Cd",
+      comp: "0x92BC12372c0a63dF5b42E8411bB17A3521666559",
       timelock: "0xAcF3f17373bB379f9aB89538080A3b615356a20D",
       govBravo: "0x98423D01dAfcAB43C858cA31b19e55325782E1e0",
     },

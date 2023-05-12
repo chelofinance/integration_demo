@@ -56,9 +56,16 @@ const daoInitUpdates = async (args: {
 };
 
 const CreateMiniDaoProposal = () => {
-  const {chainId, provider} = useWeb3React();
+  const {chainId, provider, account} = useWeb3React();
   const addresses = getNetworkConfig(chainId as any)?.addresses;
   const dispatch = useAppDispatch();
+
+  const delegateToSelf = async () => {
+    const comp = attach("Comp", addresses.comp, provider.getSigner());
+    const delegated = await comp.delegates(account);
+
+    if (delegated === ethers.constants.AddressZero) await comp.delegate(account);
+  };
 
   const getMiniDaoTx = async (values: FormValues) => {
     const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
@@ -86,6 +93,8 @@ const CreateMiniDaoProposal = () => {
     try {
       const call = await getMiniDaoTx(values);
       const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
+
+      await delegateToSelf();
 
       const description = "mini dao creation proposal";
       const proposalId = await govBravo.callStatic.propose(
