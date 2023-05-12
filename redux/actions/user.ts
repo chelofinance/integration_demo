@@ -1,7 +1,7 @@
 import {createAsyncThunk, createAction} from "@reduxjs/toolkit";
 
 import * as actionTypes from "@redux/constants";
-import {addNetwork, getNetworkProvider, getProvider, switchNetwork} from "@helpers/index";
+import {addNetwork, getNetworkProvider, switchNetwork} from "@helpers/index";
 import {ConnectionType} from "@helpers/connection";
 import {Connector} from "@web3-react/types";
 import {getConnection} from "@helpers/connection/utils";
@@ -9,16 +9,6 @@ import {TransactionMeta} from "types";
 import {getNetworkConfig} from "@helpers/network";
 import {RootState} from "@redux/store";
 import {attach} from "@helpers/contracts";
-import {BigNumber, ethers} from "ethers";
-import {
-  onCreateProposal,
-  onProposalExecuted,
-  onRoundCreated,
-  onTokenBurn,
-  onTokenMint,
-  onVoteCast,
-} from "./daos";
-import {Log} from "@ethersproject/providers";
 import {TokenRoles} from "@shared/constants";
 
 export const onConnectWallet = createAsyncThunk<
@@ -175,129 +165,5 @@ export const onShowTransaction = createAction(
     return {
       payload: transactionInfo,
     };
-  }
-);
-
-export const onSubscribeEvents = createAsyncThunk<boolean, void, {state: RootState}>(
-  actionTypes.SUBSCRIBE_EVENTS,
-  async (_, {getState, dispatch, rejectWithValue}) => {
-    const state = getState();
-    const chainId = state.user.account.networkId;
-    const dao = state.daos.daos[0] as MiniDAO;
-    const {provider: rpc} = getNetworkConfig(chainId);
-    const provider = getProvider(rpc);
-
-    const coreContract = attach("RoundVoting", dao.id, provider);
-    const token = attach("ERC1155", dao.token.address, provider);
-
-    coreContract.on(
-      "ProposalCreated",
-      (
-        ...args: [
-          BigNumber,
-          string,
-          string[],
-          BigNumber[],
-          string[],
-          string[],
-          BigNumber,
-          BigNumber,
-          BigNumber,
-          string,
-          Log
-        ]
-      ) => {
-        const [
-          proposalId,
-          proposer,
-          targets,
-          values,
-          signatures,
-          calldatas,
-          roundId,
-          startBlock,
-          endBlock,
-          description,
-          event,
-        ] = args;
-        dispatch(
-          onCreateProposal({
-            proposalId,
-            proposer,
-            roundId,
-            targets,
-            values,
-            signatures,
-            calldatas,
-            startBlock,
-            endBlock,
-            description,
-            coreAddress: dao.id,
-          })
-        );
-      }
-    );
-
-    coreContract.on("VoteCast", (...args: [string, BigNumber, number, BigNumber, string, Log]) => {
-      const [voter, proposalId, support, votes, reason, event] = args;
-      console.log("VoteCast", args);
-      dispatch(onVoteCast({voter, proposalId, support, votes, reason, coreAddress: dao.id}));
-    });
-
-    coreContract.on("ProposalExecuted", (...args: [BigNumber, Log]) => {
-      const [proposalId, event] = args;
-      console.log("ProposalExecuted", args);
-      dispatch(
-        onProposalExecuted({
-          proposalId,
-          coreAddress: dao.id,
-        })
-      );
-    });
-
-    coreContract.on("RoundCreated", (...args: [BigNumber, Log]) => {
-      const [roundId, event] = args;
-      console.log("RoundCreated", roundId, event);
-      dispatch(
-        onRoundCreated({
-          roundId,
-          coreAddress: dao.id,
-        })
-      );
-    });
-
-    token.on(
-      "TransferSingle",
-      (...args: [string, string, string, BigNumber, BigNumber, unknown, Log]) => {
-        const [_operator, from, to, idRole, amount, _data, log] = args;
-        console.log("TransferSingle", from, to, idRole, amount);
-
-        if (from === ethers.constants.AddressZero) {
-          //mint
-          dispatch(
-            onTokenMint({
-              from,
-              to,
-              id: idRole,
-              amount: amount,
-              coreAddress: dao.id,
-            })
-          );
-        } else {
-          // burn
-          dispatch(
-            onTokenBurn({
-              from,
-              to,
-              id: idRole,
-              amount: amount,
-              coreAddress: dao.id,
-            })
-          );
-        }
-      }
-    );
-
-    return true;
   }
 );

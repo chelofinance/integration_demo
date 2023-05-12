@@ -1,3 +1,5 @@
+import {toBN} from "@helpers/index";
+
 export const DEFAULT_SETTINGS = Object.freeze({
   minApr: "0",
   maxApr: "0",
@@ -7,6 +9,15 @@ export const DEFAULT_SETTINGS = Object.freeze({
   maxDefaulted: "0",
   managerDuration: "0",
 });
+
+export const DEFAULT_DAO_SETTINGS = {
+  name: "OZ-Governor",
+  lifetime: 3600 * 24 * 30 + Date.now(),
+  votingPeriod: String(10000000),
+  votingDelay: toBN(4).toString(),
+  quorum: 10,
+  proposalThreshold: 0,
+};
 
 export const ROUTES = Object.freeze([
   {

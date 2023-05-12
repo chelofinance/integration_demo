@@ -125,30 +125,12 @@ type ProposalVote = {
 };
 
 type MiniDaoProposal = {
-  roundId: string;
-  description: string;
-  endBlock: string;
   id: string;
-  canceled: boolean;
+  targets: string[];
+  data: string[];
+  values: number[];
+  description: string;
   executed: boolean;
-  proposalId: string;
-  votesYes: string;
-  votesNo: string;
-  votes?: {}[];
-  imageLocal?: string;
-  metadata?: {
-    title: string;
-    description: string;
-    image: string;
-    seed?: string;
-    metadata: {
-      name: string;
-      wallet: string;
-      questions: {question: string; answer: string}[];
-    };
-  };
-  calls: ProposalCall[];
-  votes: ProposalVote[];
 };
 
 interface MiniDAO extends DAO {
@@ -157,7 +139,7 @@ interface MiniDAO extends DAO {
   votingDelay: string;
   votingPeriod: string;
   quorum: string;
-  rounds?: ProposalRound[];
+  proposals: MiniDaoProposal[];
 }
 
 type AragonApp = {

@@ -3,14 +3,13 @@ import {ContractReceipt} from "@ethersproject/contracts";
 import {LogDescription} from "@ethersproject/abi";
 
 import {getProvider} from "@helpers/index";
-import aragon from "./Aragon";
-import chelo from "./Chelo";
 import {JsonRpcProvider, TransactionResponse, Web3Provider} from "@ethersproject/providers";
-import {getNetworkConfig} from "@helpers/network";
+import chelo from "./Chelo";
+import compound from "./Compound";
 
 export const abis = {
-  ...aragon,
   ...chelo,
+  ...compound,
 };
 
 export function attach(

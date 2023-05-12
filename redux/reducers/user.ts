@@ -88,10 +88,6 @@ export const userReducer = createReducer(user_state, (builder) => {
         }
     });
 
-    builder.addCase(actions.onSubscribeEvents.fulfilled, (state: UserState, action) => {
-        state.account.subscribed = action.payload;
-    });
-
     //error handling
     builder.addCase(actions.onSwitchNetwork.rejected, (state: UserState, action) => {
         state.error = action.payload;

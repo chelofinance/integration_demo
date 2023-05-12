@@ -3,7 +3,11 @@ type NetworkConfig = {
   provider: string;
   providerWs: string;
   addresses: {
-    feeController: string;
+    factory: string;
+    registry: string;
+    token: string;
+    timelock: string;
+    govBravo: string;
   };
   endpoints: {
     chelo: string;
@@ -35,7 +39,10 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: "",
     providerWs: "",
     addresses: {
-      feeController: "",
+      factory: "",
+      registry: "",
+      token: "",
+      timelock: "",
     },
     endpoints: {
       chelo: null,
@@ -61,7 +68,11 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://eth-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_GOERLI_PROVIDER}`,
     providerWs: `wss://eth-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_GOERLI_PROVIDER}`,
     addresses: {
-      feeController: "",
+      factory: "",
+      registry: "",
+      token: "",
+      timelock: "",
+      govBravo: "",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph",
@@ -88,7 +99,11 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_POLYGON_PROVIDER}`,
     providerWs: `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_POLYGON_PROVIDER}`,
     addresses: {
-      feeController: "",
+      factory: "",
+      registry: "",
+      token: "",
+      timelock: "",
+      govBravo: "",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph_production",
@@ -113,7 +128,11 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     providerWs: `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     addresses: {
-      feeController: "0x6aB3F93E81bA0548303465F19b59A5135b1bD0F3",
+      factory: "0x6aB3F93E81bA0548303465F19b59A5135b1bD0F3",
+      registry: "",
+      token: "",
+      timelock: "",
+      govBravo: "",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph",
@@ -139,7 +158,11 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: "http://127.0.0.1:8545/",
     providerWs: "wss://127.0.0.1:8545/",
     addresses: {
-      feeController: "0x4072BF63d76C0c7f699c6D9B04f313A0289D0fA3",
+      factory: "0x066A4d1528B97AD6ECB72FD623302Ed25Df50732",
+      registry: "0xDE3cA147D00D8f345Be4fF01EC17a96D77a1a56C",
+      token: "0x0c4B7c58B796b4Ad53A1471d24d0848617D689Cd",
+      timelock: "0xAcF3f17373bB379f9aB89538080A3b615356a20D",
+      govBravo: "0x98423D01dAfcAB43C858cA31b19e55325782E1e0",
     },
     endpoints: {
       chelo: "http://localhost:8000/subgraphs/name/rcontre360/talent_subgraph",
