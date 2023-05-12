@@ -4,7 +4,6 @@ import {Web3Storage} from "web3.storage";
 
 import {makeQuery} from "@helpers/connection";
 import {getNetworkConfig} from "@helpers/network";
-import {GovernorsQuery} from "__generated__/gql/graphql";
 import {getProvider, hash, toBN} from "..";
 import {GET_ALL_GIVEN_OWNER} from "./queries";
 
@@ -46,10 +45,10 @@ export const getUserCheloDAOs = async (args: {
   const {networkId} = args;
   const {endpoints, provider: rpc} = getNetworkConfig(networkId);
   const provider = getProvider(rpc);
-  const res = await makeQuery<GovernorsQuery>(endpoints.chelo, GET_ALL_GIVEN_OWNER);
+  const res = await makeQuery<any>(endpoints.chelo, GET_ALL_GIVEN_OWNER);
   const curBlock = await provider.getBlock("latest");
 
-  const getProposalsInfo = async (governor: GovernorsQuery["governors"][0]) => {
+  const getProposalsInfo = async (governor: any) => {
     const proposalsInfo = await Promise.all(governor.proposals.map((proposal) => proposal));
     return proposalsInfo.map((info, i) => ({
       ...info,
@@ -149,9 +148,7 @@ export function getProposalId(
   );
 }
 
-export const getRoundInfo = async (
-  round: GovernorsQuery["proposalRounds"][0]
-): Promise<ProposalRound> => {
+export const getRoundInfo = async (round: any["proposalRounds"][0]): Promise<ProposalRound> => {
   const metadata = await getIpfsRound(round.description);
   const imageUrl = ipfsToHttp(metadata.image);
   let finalImage = "";

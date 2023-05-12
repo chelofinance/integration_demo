@@ -1,13 +1,4 @@
-import {graphql} from "__generated__/gql";
 import gql from "graphql-tag";
-
-export const GET_ACCOUNT = graphql(/* GraphQL */ `
-  query GetAccount($id: ID!) {
-    account(id: $id) {
-      id
-    }
-  }
-`);
 
 export const GET_ALL_GIVEN_OWNER = /* GraphQL */ gql`
   query Governors {
