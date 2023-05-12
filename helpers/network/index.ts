@@ -128,11 +128,11 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     providerWs: `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     addresses: {
-      factory: "0x6aB3F93E81bA0548303465F19b59A5135b1bD0F3",
-      registry: "",
-      token: "",
-      timelock: "",
-      govBravo: "",
+      factory: "0x5f1D6Ba74321C546E5ed955660BA383938f9905D",
+      registry: "0x55d3008DD56071fCAe59F7794a4b7959ac72d4A6",
+      token: "0x9Ad26c5eDF599F5F60D6686a1124cc93b4F58969",
+      timelock: "0x57077Baf230e8858b72DE157Eca70Ae470b1A2a8",
+      govBravo: "0x67581Bab896B319175657286F906deD8762B09C6",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph",
