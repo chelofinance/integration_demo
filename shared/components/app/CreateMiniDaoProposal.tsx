@@ -66,7 +66,7 @@ const CreateMiniDaoProposal = () => {
     const delegated = await comp.delegates(account);
 
     if (delegated === ethers.constants.AddressZero) {
-      await comp.delegate(account);
+      await (await comp.delegate(account)).wait();
     }
   };
 
