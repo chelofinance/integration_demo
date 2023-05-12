@@ -62,9 +62,12 @@ const CreateMiniDaoProposal = () => {
 
   const delegateToSelf = async () => {
     const comp = attach("Comp", addresses.comp, provider.getSigner());
+    console.log({account});
     const delegated = await comp.delegates(account);
 
-    if (delegated === ethers.constants.AddressZero) await comp.delegate(account);
+    if (delegated === ethers.constants.AddressZero) {
+      await comp.delegate(account);
+    }
   };
 
   const getMiniDaoTx = async (values: FormValues) => {
