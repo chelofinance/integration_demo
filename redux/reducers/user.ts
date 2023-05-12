@@ -62,12 +62,6 @@ export const userReducer = createReducer(user_state, (builder) => {
         state.account.networkId = action.payload.networkId;
     });
 
-    builder.addCase(actions.onLoadWalletAssets.fulfilled, (state: UserState, action) => {
-        state.assets.erc721 = action.payload.erc721;
-        state.assets.erc20 = action.payload.erc20 as any;
-        state.account.roles = action.payload.roles;
-    });
-
     builder.addCase(actions.onUpdateError, (state: UserState, action) => {
         state.error = {...state.error, ...action.payload};
     });
@@ -90,10 +84,6 @@ export const userReducer = createReducer(user_state, (builder) => {
 
     //error handling
     builder.addCase(actions.onSwitchNetwork.rejected, (state: UserState, action) => {
-        state.error = action.payload;
-    });
-
-    builder.addCase(actions.onLoadWalletAssets.rejected, (state: UserState, action) => {
         state.error = action.payload;
     });
 

@@ -13,7 +13,6 @@ import {onShowTransaction, onUpdateError} from "@redux/actions";
 import {calculateGasMargin, wait} from "@helpers/index";
 import {TransactionRequest} from "@ethersproject/providers";
 import {parseCheloTransaction} from "@helpers/chelo";
-import {MiniDaoController} from "@shared/sdk/adapters/mini_dao";
 import {getScriptType} from "@helpers/contracts";
 
 interface TransactionModalProps extends TransactionMeta {
@@ -122,15 +121,6 @@ export const TransactionModal: React.FunctionComponent<TransactionModalProps> = 
     }
   };
 
-  const handleCheloProposal = async () => {
-    const dao = daos.daos.find((dao) => dao.id === daoId) as MiniDAO;
-    const controller = new MiniDaoController(dao, provider);
-
-    changeTransactionStatus("sent");
-    const tx = await controller.propose(txs, {description: (metadata as {cid: string}).cid});
-    await tx.wait();
-  };
-
   const onSubmitTx = async () => {
     try {
       if (customExecute) return await customExecute({txs, dao: daoId, type});
@@ -138,7 +128,6 @@ export const TransactionModal: React.FunctionComponent<TransactionModalProps> = 
       changeTransactionStatus("confirmed");
 
       if (type === "wallet") await handleTransaction();
-      if (type === "chelo") await handleCheloProposal();
     } catch (err) {
       console.log("tx error", err);
       changeTransactionStatus("waiting");

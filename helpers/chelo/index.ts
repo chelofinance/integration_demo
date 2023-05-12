@@ -50,9 +50,7 @@ export const getUserCheloDAOs = async (args: {
   const curBlock = await provider.getBlock("latest");
 
   const getProposalsInfo = async (governor: GovernorsQuery["governors"][0]) => {
-    const proposalsInfo = await Promise.all(
-      governor.proposals.map((proposal) => getIpfsProposal(proposal.description))
-    );
+    const proposalsInfo = await Promise.all(governor.proposals.map((proposal) => proposal));
     return proposalsInfo.map((info, i) => ({
       ...info,
       proposalId: governor.proposals[i].proposalId,
@@ -104,7 +102,7 @@ export const getUserCheloDAOs = async (args: {
       };
     });
 
-    const res: MiniDAO = {
+    const res: any = {
       id: governor.id,
       name: governor.name,
       wallet: governor.id,
@@ -128,16 +126,6 @@ export const getUserCheloDAOs = async (args: {
       votingDelay: governor.votingDelay as string,
       votingPeriod: governor.votingPeriod as string,
       quorum: governor.quorum as string,
-      rounds: fullRounds.map((round) => {
-        const roundProposals = proposals.filter((prop) => prop.roundId === round.id);
-        const finished = curBlock.number > Number(round.endBlock.toString());
-        return {
-          ...round,
-          id: parseInt(round.id.split("/")[1], 16).toString(),
-          proposals: roundProposals,
-          finished,
-        };
-      }),
     };
 
     return res;
@@ -198,12 +186,6 @@ export function ipfsToHttp(cid: string, gateway = "https://"): string {
 export async function getIpfsRound(cid: string): Promise<ProposalRound["metadata"]> {
   const url = ipfsToHttp(cid);
   const response = await axios.get<ProposalRound["metadata"]>(url);
-  return response.data;
-}
-
-export async function getIpfsProposal(cid: string): Promise<MiniDaoProposal["metadata"]> {
-  const url = ipfsToHttp(cid);
-  const response = await axios.get<MiniDaoProposal["metadata"]>(url);
   return response.data;
 }
 

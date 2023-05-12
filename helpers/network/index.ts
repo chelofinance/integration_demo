@@ -43,6 +43,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       registry: "",
       token: "",
       timelock: "",
+      govBravo: "",
     },
     endpoints: {
       chelo: null,

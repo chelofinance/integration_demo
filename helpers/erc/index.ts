@@ -4,7 +4,6 @@ import {TokenList} from "@uniswap/token-lists";
 
 import {attach} from "@helpers/contracts";
 import {getNetworkConfig} from "@helpers/network";
-import {TransactionRequest} from "@ethersproject/providers";
 
 export const DEFAULT_TOKEN_LIST = "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
 
@@ -80,18 +79,6 @@ export const loadERC20 = async (token: string, networkId: SupportedNetworks): Pr
   ]);
 
   return {symbol, name, totalSupply: totalSupply.toString(), decimals, address: token};
-};
-
-export const getNextERC721Enummerable = async (args: {
-  contract: string;
-  owner: string;
-  index: number;
-  networkId: SupportedNetworks;
-}): Promise<string> => {
-  const {contract, owner, index, networkId} = args;
-  const {provider} = getNetworkConfig(networkId);
-  const nftContract = attach("ERC721", contract, provider);
-  return (await nftContract.tokenOfOwnerByIndex(owner, index)).toString();
 };
 
 export const prettifyNumber = (number: BigNumber) => {
