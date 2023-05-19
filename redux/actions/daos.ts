@@ -19,9 +19,9 @@ export const onAddProposal = createAsyncThunk<
 });
 
 export const onAddMiniDao = createAsyncThunk<
-  {baseWallet: string; modules: {address: string}[]},
-  {baseWallet: string; modules: {address: string}[]}
+  {baseWallet: string; creationBlock: number; modules: {address: string}[]},
+  {baseWallet: string; blockNumber: number; modules: {address: string}[]}
 >("dao/addMiniDao", async (args) => {
-  const {baseWallet, modules} = args;
-  return {baseWallet, modules};
+  const {baseWallet, modules, blockNumber} = args;
+  return {baseWallet, modules, creationBlock: blockNumber};
 });

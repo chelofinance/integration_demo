@@ -8,6 +8,22 @@ import {getNetworkConfig} from "@helpers/network";
 import {attach} from "@helpers/contracts";
 import {getLogs, getNetworkProvider} from "@helpers/index";
 import {onAddMiniDao} from "@redux/actions";
+import {BigNumberish, ContractTransaction, ethers} from "ethers";
+
+function getProposalId(
+  targets: string[],
+  values: BigNumberish[],
+  signature: string,
+  fulldata: string[],
+  eta: string
+) {
+  return ethers.utils.keccak256(
+    ethers.utils.defaultAbiCoder.encode(
+      ["address[]", "uint256[]", "string", "bytes32[], uint256"],
+      [targets, values, signature, fulldata, eta]
+    )
+  );
+}
 
 const ExecuteProposal = () => {
   const [loading, setLoading] = React.useState(false);
@@ -17,20 +33,37 @@ const ExecuteProposal = () => {
   const dispatch = useAppDispatch();
   const addresses = getNetworkConfig(chainId as any)?.addresses;
 
+  const isQueued = async (id: string) => {
+    const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
+    const proposal = await govBravo.proposals(id);
+    const propHahs = getProposalId(
+      proposal.targets,
+      proposal.values,
+      "",
+      proposal.data,
+      proposal.eta
+    );
+  };
+
   const handleExecution = async (values: {proposalId: string}) => {
     const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
     const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
 
     try {
-      await govBravo.queue(values.proposalId);
-      const tx = await govBravo.execute(values.proposalId);
+      await (await govBravo.queue(values.proposalId)).wait();
+    } catch (err) {
+      console.log("queued", err);
+    }
+
+    try {
+      const tx: ContractTransaction = await govBravo.execute(values.proposalId);
       const logs = getLogs(factory, await tx.wait());
       const baseWallet = logs.find((log) => log.name === "BaseWalletCreated").args.wallet;
       const modules = logs
         .filter((log) => log.name === "ModuleCreated")
         .map((log) => ({address: log.args.module, id: log.args.implId}));
 
-      dispatch(onAddMiniDao({baseWallet, modules}));
+      dispatch(onAddMiniDao({baseWallet, modules, blockNumber: tx.blockNumber}));
     } catch (err) {
       console.log("execute proposal", err);
     }

@@ -1,6 +1,7 @@
 import CreateMiniDaoProposal from "@shared/components/app/CreateMiniDaoProposal";
 import CastVote from "@shared/components/app/CastVote";
 import ExecuteProposal from "@shared/components/app/ExecuteProposal";
+import GetMiniDao from "@shared/components/app/GetMiniDao";
 import ShowMiniDao from "@shared/components/app/ShowMiniDao";
 
 const MyPage = () => {
@@ -17,7 +18,8 @@ const MyPage = () => {
           <ExecuteProposal />
         </div>
       </div>
-      <div className="flex w-full justify-center mb-10">
+      <div className="flex w-full justify-around mb-10">
+        <GetMiniDao />
         <ShowMiniDao />
       </div>
     </div>

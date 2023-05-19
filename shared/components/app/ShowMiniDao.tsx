@@ -6,21 +6,19 @@ type Module = {
   id: string;
 };
 
-type Dao = {
-  baseWallet: string;
-  modules: Module[];
-};
-
 const ShowMiniDao: React.FC = () => {
   const {daos} = useAppSelector((state) => state.daos);
 
-  if (daos.length <= 0) return null;
-
   return (
     <div className="flex flex-col items-start bg-white rounded-lg shadow-md p-6">
-      {daos.map((dao: Dao, index: number) => (
+      <span> Mini DAOs</span>
+      {daos.map((dao, index: number) => (
         <div key={index} className="mb-4">
           <h2 className="text-xl font-bold mb-2">Base Wallet: {dao.baseWallet}</h2>
+          <div className="flex flex-col">
+            <h3 className="text-lg font-bold mb-2">Creation block:</h3>
+            <span className="">{dao.creationBlock}</span>
+          </div>
           <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-2">Modules:</h3>
             {dao.modules.map((module: Module, moduleIndex: number) => (

@@ -6,6 +6,7 @@ type DaoState = {
     proposals: MiniDaoProposal[];
     daos: {
         baseWallet: string;
+        creationBlock: number;
         modules: {address: string}[];
     }[];
 };

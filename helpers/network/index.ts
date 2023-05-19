@@ -103,12 +103,12 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_POLYGON_PROVIDER}`,
     providerWs: `wss://polygon-mainnet.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_POLYGON_PROVIDER}`,
     addresses: {
-      factory: "",
-      registry: "",
-      token: "",
-      comp: "",
-      timelock: "",
-      govBravo: "",
+      factory: "0xd2fCEb07433DA8431599E78823a4DA93E19AeDb3",
+      registry: "0xC06659800D44c541DeF62f4A2Ef11F7eA931a9dF",
+      token: "0xdD906dfe4b0C5bDDf8e925567354180B488A755F",
+      comp: "0x44eD308B84FCD4d8d8ca93511ECAD64d6C34d188",
+      timelock: "0xD429880591D366ddf812a71FA3406D9d9659b2DD",
+      govBravo: "0x41E6dC2CC382125c86D9DeDD31359f20785d7a42",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph_production",
