@@ -135,7 +135,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     addresses: {
       factory: "0x5f1D6Ba74321C546E5ed955660BA383938f9905D",
       registry: "0x55d3008DD56071fCAe59F7794a4b7959ac72d4A6",
-      token: "0x9Ad26c5eDF599F5F60D6686a1124cc93b4F58969",
+      token: "0x75522Eb8fFD627c06FfefA9f0912Ad80D97855f7",
       comp: "0x9Ad26c5eDF599F5F60D6686a1124cc93b4F58969",
       timelock: "0x57077Baf230e8858b72DE157Eca70Ae470b1A2a8",
       govBravo: "0x67581Bab896B319175657286F906deD8762B09C6",
