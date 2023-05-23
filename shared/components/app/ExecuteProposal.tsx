@@ -33,18 +33,6 @@ const ExecuteProposal = () => {
   const dispatch = useAppDispatch();
   const addresses = getNetworkConfig(chainId as any)?.addresses;
 
-  const isQueued = async (id: string) => {
-    const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
-    const proposal = await govBravo.proposals(id);
-    const propHahs = getProposalId(
-      proposal.targets,
-      proposal.values,
-      "",
-      proposal.data,
-      proposal.eta
-    );
-  };
-
   const handleExecution = async (values: {proposalId: string}) => {
     const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
     const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));

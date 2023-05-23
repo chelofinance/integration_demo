@@ -9,50 +9,12 @@ import {ethers} from "ethers";
 import {DEFAULT_DAO_SETTINGS} from "@shared/constants";
 import {useAppDispatch} from "@redux/store";
 import {onAddProposal} from "@redux/actions";
+import {getMiniDaoCall} from "mini-daos-sdk";
 
 type FormValues = {
   name: string;
   votingPeriod: string;
-  quorum: string;
-};
-
-const daoInitUpdates = async (args: {
-  wallet?: string;
-  factory?: string;
-  registry: string;
-  token: string;
-  owner: string;
-  settings: any;
-}) => {
-  const coreIface = new ethers.utils.Interface([
-    "function initialize((string name, uint256 lifetime, uint256 votingPeriod, uint256 votingDelay, uint256 quorum, uint256 proposalThreshold), address initToken, address _baseWallet, address _registry)",
-    "function grantRole(bytes32 role, address account)",
-    "function renounceRole(bytes32 role, address account)",
-  ]);
-
-  const settings = args.settings;
-  const initCall = coreIface.encodeFunctionData("initialize", [
-    [
-      settings.name || DEFAULT_DAO_SETTINGS.name,
-      settings.lifetime || DEFAULT_DAO_SETTINGS.lifetime,
-      settings.votingPeriod || DEFAULT_DAO_SETTINGS.votingPeriod,
-      settings.votingDelay || DEFAULT_DAO_SETTINGS.votingDelay,
-      settings.quorum || DEFAULT_DAO_SETTINGS.quorum,
-      settings.proposalThreshold || DEFAULT_DAO_SETTINGS.proposalThreshold,
-    ],
-    args.token,
-    args.wallet,
-    args.registry,
-  ]);
-  const roles = [hash("MANAGER_ROLE"), hash("DEFAULT_ADMIN_ROLE"), hash("UPGRADER_ROLE")];
-  const grantCalls = roles.map((role) =>
-    coreIface.encodeFunctionData("grantRole", [role, args.owner])
-  );
-  const renounceCalls = roles.map((role) =>
-    coreIface.encodeFunctionData("renounceRole", [role, args.factory])
-  );
-
-  return [initCall, ...grantCalls, ...renounceCalls];
+  description: string;
 };
 
 const CreateMiniDaoProposal = () => {
@@ -62,7 +24,6 @@ const CreateMiniDaoProposal = () => {
 
   const delegateToSelf = async () => {
     const comp = attach("Comp", addresses.comp, provider.getSigner());
-    console.log({account});
     const delegated = await comp.delegates(account);
 
     if (delegated === ethers.constants.AddressZero) {
@@ -70,51 +31,50 @@ const CreateMiniDaoProposal = () => {
     }
   };
 
-  const getMiniDaoTx = async (values: FormValues) => {
-    const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
-    const namehash = hash(values.name);
-    const walletAddress = await factory.precomputeWalletAddress(namehash);
-    const moduleSettings = [
-      {
-        implId: hash("coremodule"),
-        deployment: ethers.constants.AddressZero,
-        initialUpdates: await daoInitUpdates({
-          wallet: walletAddress,
-          factory: factory.address,
-          owner: addresses.timelock,
-          registry: addresses.registry,
-          token: addresses.token,
-          settings: DEFAULT_DAO_SETTINGS,
-        }),
-      },
-    ];
-
-    return await factory.populateTransaction.createMiniDao(moduleSettings, [], values.name);
-  };
-
   const handleNormalSubmit = async (values: FormValues) => {
     try {
-      const call = await getMiniDaoTx(values);
+      const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
       const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
+      const votingPeriod = Number(values.votingPeriod) * 60; //minutes
+      const call = await getMiniDaoCall(factory, {
+        name: values.name,
+        modules: [
+          {
+            implId: "DAO_MODULE",
+            settings: {
+              registry: addresses.registry,
+              token: addresses.token,
+              owner: addresses.timelock,
+              settings: {
+                name: values.name,
+                lifetime: 0,
+                votingPeriod: votingPeriod.toString(),
+                votingDelay: String(0),
+                quorum: 0,
+                proposalThreshold: 0,
+              },
+            },
+          },
+        ],
+      });
 
       await delegateToSelf();
 
-      const description = "mini dao creation proposal";
       const proposalId = await govBravo.callStatic.propose(
         [call.to],
         [0],
         [""],
         [call.data],
-        description
+        values.description
       );
-      await govBravo.propose([call.to], [0], [""], [call.data], "mini dao creation proposal");
+      await govBravo.propose([call.to], [0], [""], [call.data], values.description);
       dispatch(
         onAddProposal({
           id: proposalId.toString(),
           targets: [call.to],
           values: [0],
           data: [call.data],
-          description,
+          description: values.description,
         })
       );
     } catch (err) {
@@ -131,12 +91,12 @@ const CreateMiniDaoProposal = () => {
           initialValues={{
             name: "",
             votingPeriod: "",
-            quorum: "",
+            description: "",
           }}
           validationSchema={Yup.object({
             name: Yup.string().required("Name of Mini DAO required"),
             votingPeriod: Yup.number().required("Voting period required"),
-            quorum: Yup.number().required("Quorum required"),
+            description: Yup.string().required("Description required"),
           })}
         >
           {({errors, ...props}) => (
@@ -161,9 +121,9 @@ const CreateMiniDaoProposal = () => {
                     />
                     <TextInput
                       white
-                      name="quorum"
+                      name="description"
                       classes={{root: "w-full mb-4"}}
-                      placeholder="Quorum"
+                      placeholder="Description"
                     />
                   </div>
                 </div>

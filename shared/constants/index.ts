@@ -13,8 +13,8 @@ export const DEFAULT_SETTINGS = Object.freeze({
 export const DEFAULT_DAO_SETTINGS = {
   name: "OZ-Governor",
   lifetime: 3600 * 24 * 30 + Date.now(),
-  votingPeriod: String(10000000),
-  votingDelay: toBN(4).toString(),
+  votingPeriod: String(30 * 3),
+  votingDelay: 0,
   quorum: 10,
   proposalThreshold: 0,
 };

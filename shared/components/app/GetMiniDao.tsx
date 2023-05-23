@@ -17,14 +17,8 @@ type Module = {
   id: string;
 };
 
-type Dao = {
-  baseWallet: string;
-  modules: Module[];
-};
-
 const GetMiniDao: React.FC = () => {
   const {
-    daos: {daos},
     user: {account},
   } = useAppSelector((state) => state);
   const dispatch = useAppDispatch();

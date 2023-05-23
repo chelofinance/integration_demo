@@ -9,6 +9,7 @@ type NetworkConfig = {
     comp: string;
     timelock: string;
     govBravo: string;
+    mockToken: string;
   };
   endpoints: {
     chelo: string;
@@ -46,6 +47,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       comp: "",
       timelock: "",
       govBravo: "",
+      mockToken: "",
     },
     endpoints: {
       chelo: null,
@@ -77,6 +79,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       comp: "",
       timelock: "",
       govBravo: "",
+      mockToken: "",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph",
@@ -109,6 +112,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       comp: "0x44eD308B84FCD4d8d8ca93511ECAD64d6C34d188",
       timelock: "0xD429880591D366ddf812a71FA3406D9d9659b2DD",
       govBravo: "0x41E6dC2CC382125c86D9DeDD31359f20785d7a42",
+      mockToken: "",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph_production",
@@ -133,12 +137,13 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     providerWs: `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     addresses: {
-      factory: "0x5f1D6Ba74321C546E5ed955660BA383938f9905D",
-      registry: "0x55d3008DD56071fCAe59F7794a4b7959ac72d4A6",
-      token: "0x75522Eb8fFD627c06FfefA9f0912Ad80D97855f7",
-      comp: "0x9Ad26c5eDF599F5F60D6686a1124cc93b4F58969",
-      timelock: "0x57077Baf230e8858b72DE157Eca70Ae470b1A2a8",
-      govBravo: "0x67581Bab896B319175657286F906deD8762B09C6",
+      factory: "0x953c0C38303C7fDb360b8cF9B4f4522754f24A70",
+      registry: "0xcFEB3e5275cFe3cF035Dcc97a753E88c0Ae50bE7",
+      token: "0x1Af2228b3d6506B40EeC41e9772b2Cd5aa734F04",
+      comp: "0x3993873B00DfbE132bB08C1d21ABa9FB5BFd1aF9",
+      timelock: "0xd2cF55F3ea835c329100914e09db1d05A1E8662F",
+      govBravo: "0x07Fe9877Fb1753595cF0762edc73e14EAEf871a6",
+      mockToken: "0x528F13987d5F95c469834E37C1Bb6cdEE005D4dF",
     },
     endpoints: {
       chelo: "https://api.thegraph.com/subgraphs/name/rcontre360/talent_subgraph",
@@ -170,6 +175,7 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
       comp: "0x92BC12372c0a63dF5b42E8411bB17A3521666559",
       timelock: "0xAcF3f17373bB379f9aB89538080A3b615356a20D",
       govBravo: "0x98423D01dAfcAB43C858cA31b19e55325782E1e0",
+      mockToken: "0x7c0d361b47570850Eefcf29A4EBe8827aB7A9AeB",
     },
     endpoints: {
       chelo: "http://localhost:8000/subgraphs/name/rcontre360/talent_subgraph",

@@ -18,6 +18,7 @@ export const LOAD_VOTES = "load_votes";
 export const ADD_VOTE = "add_vote";
 export const UPDATE_VOTE = "update_vote";
 export const LOAD_VOTE_SCRIPT = "load_vote_script";
+export const CREATE_MINI_PROPOSAL = "create_mini_proposal";
 export const CREATE_PROPOSAL = "create_proposal";
 export const ROUND_CREATED = "round_created";
 export const VOTE_CAST = "vote_cast";

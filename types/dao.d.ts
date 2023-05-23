@@ -60,9 +60,10 @@ interface DAO {
   name: string;
   wallet: string;
   type: DaoType;
-  mini_daos?: MiniDAO[];
-  members?: {account: string; stake: string; role: string}[];
   isRoot: boolean;
+  mini_daos?: MiniDAO[];
+  creationBlock?: number;
+  members?: {account: string; stake: string; role: string}[];
   erc20?: {
     address: string;
     balance: string;
@@ -131,6 +132,7 @@ type MiniDaoProposal = {
   values: number[];
   description: string;
   executed: boolean;
+  status: number;
 };
 
 interface MiniDAO extends DAO {
@@ -140,6 +142,11 @@ interface MiniDAO extends DAO {
   votingPeriod: string;
   quorum: string;
   proposals: MiniDaoProposal[];
+  modules: {
+    id: string;
+    address: string;
+    settings?: Record<string, unknown>;
+  }[];
 }
 
 type AragonApp = {

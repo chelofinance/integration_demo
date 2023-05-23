@@ -9,9 +9,8 @@ import LayoutDropdown, {DropdownElement} from "../LayoutDropdown";
 import {useRole} from "@shared/hooks/daos";
 
 const Sidebar = () => {
-  const {daos} = useAppSelector((state) => state);
   const {round, minter} = useRole();
-  const loaded = daos.daos.length <= 0;
+  const loaded = false;
 
   const LENDING_ITEMS: DropdownElement[] = [
     {label: "Home", url: "/lending", off: loaded, icon: <HomeOutlined width={30} />},

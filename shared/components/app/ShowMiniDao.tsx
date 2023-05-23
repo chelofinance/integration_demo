@@ -1,5 +1,6 @@
 //import React from 'react';
 import {useAppSelector} from "@redux/store";
+import Link from "next/link";
 
 type Module = {
   address: string;
@@ -7,14 +8,16 @@ type Module = {
 };
 
 const ShowMiniDao: React.FC = () => {
-  const {daos} = useAppSelector((state) => state.daos);
+  const {mini_daos} = useAppSelector((state) => state.daos);
 
   return (
     <div className="flex flex-col items-start bg-white rounded-lg shadow-md p-6">
       <span> Mini DAOs</span>
-      {daos.map((dao, index: number) => (
+      {mini_daos.map((dao, index: number) => (
         <div key={index} className="mb-4">
-          <h2 className="text-xl font-bold mb-2">Base Wallet: {dao.baseWallet}</h2>
+          <h2 className="text-xl font-bold mb-2">
+            Base Wallet: <Link href={`${dao.id}`}>{dao.id}</Link>
+          </h2>
           <div className="flex flex-col">
             <h3 className="text-lg font-bold mb-2">Creation block:</h3>
             <span className="">{dao.creationBlock}</span>
