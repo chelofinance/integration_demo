@@ -5,10 +5,17 @@ import * as actions from "@redux/constants";
 // Define the action to add a proposal
 export const onAddProposal = createAsyncThunk<
   MiniDaoProposal,
-  {id: string; targets: string[]; data: string[]; values: number[]; description: string},
+  {
+    id: string;
+    targets: string[];
+    data: string[];
+    values: number[];
+    description: string;
+    timelock: boolean;
+  },
   {rejectValue: StateErrorType}
 >(actions.CREATE_PROPOSAL, async (args) => {
-  const {id, targets, data, values, description} = args;
+  const {id, targets, data, values, description, timelock} = args;
   const proposal: MiniDaoProposal = {
     id,
     targets,
@@ -17,6 +24,7 @@ export const onAddProposal = createAsyncThunk<
     description,
     executed: false,
     status: 0,
+    timelock,
   };
   return proposal;
 });

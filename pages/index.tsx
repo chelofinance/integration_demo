@@ -3,11 +3,20 @@ import CastVote from "@shared/components/app/CastVote";
 import ExecuteProposal from "@shared/components/app/ExecuteProposal";
 import GetMiniDao from "@shared/components/app/GetMiniDao";
 import ShowMiniDao from "@shared/components/app/ShowMiniDao";
+import BalanceCard from "@shared/components/app/AddressBalance";
+import {getNetworkConfig} from "@helpers/network";
+import {useWeb3React} from "@web3-react/core";
 
 const MyPage = () => {
+  const {chainId} = useWeb3React();
+  const {addresses} = getNetworkConfig(chainId as any);
+
   return (
     <div className="flex flex-col">
-      <div className="flex w-full">
+      <div className="absolute top-3 left-10">
+        <BalanceCard userAddress={addresses.timelock} />
+      </div>
+      <div className="flex w-full pt-5">
         <div className="w-1/2 p-4">
           <CreateMiniDaoProposal />
         </div>

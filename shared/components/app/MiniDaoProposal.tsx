@@ -34,13 +34,11 @@ const MiniDaoProposal = () => {
       const iface = new ethers.utils.Interface([`function ${values.functionSignature}`]);
       const calldata = iface.encodeFunctionData(values.functionSignature, args);
 
-      const coreModule = await attach(provider.getSigner(), "Core", miniDao.modules[0].address);
+      const dao = attach(provider.getSigner(), "DaoModule", miniDao.modules[0].address);
       const description = "Proposal from mini dao";
       const proposalLog = getLogs(
-        coreModule,
-        await getReceipt(
-          coreModule.propose([values.address], [values.value], [calldata], description)
-        )
+        dao,
+        await getReceipt(dao.propose([values.address], [values.value], [calldata], description))
       ).find((log) => log.name === "ProposalCreated");
 
       dispatch(
@@ -69,7 +67,7 @@ const MiniDaoProposal = () => {
             address: addresses?.mockToken || "",
             value: "0",
             functionSignature: "transfer(address,uint)",
-            arguments: "",
+            arguments: `${account.address}, 0`,
           }}
           validationSchema={Yup.object({
             address: Yup.string()
@@ -111,7 +109,7 @@ const MiniDaoProposal = () => {
                       name="arguments"
                       classes={{root: "w-full mb-4"}}
                       placeholder="Arguments (separated by comma)"
-                    />
+                    />{" "}
                   </div>
                 </div>
               </div>

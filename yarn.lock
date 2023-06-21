@@ -6173,10 +6173,10 @@ min-indent@^1.0.0:
   resolved "https://registry.yarnpkg.com/min-indent/-/min-indent-1.0.1.tgz#a63f681673b30571fbe8bc25686ae746eefa9869"
   integrity sha512-I9jwMn07Sy/IwOj3zVkVik2JTvgpaykDZEigL6Rx6N9LbMywwUSMtxET+7lVoDLLd3O3IXwJwvuuns8UB/HeAg==
 
-mini-daos-sdk@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/mini-daos-sdk/-/mini-daos-sdk-1.0.0.tgz#997b544f6396aa61f89fbc4450f5fd76400e5c9b"
-  integrity sha512-NAwFr4coW5cpKz6c1dS6DHE8TTeKpEnoZZrV8wo5cQpBPEskffgEydQqESwxtk5iOeycTBmkJCxhidWyCxOdDA==
+mini-daos-sdk@^1.0.14:
+  version "1.0.14"
+  resolved "https://registry.yarnpkg.com/mini-daos-sdk/-/mini-daos-sdk-1.0.14.tgz#051b54484effbdf5b29c205b0b7376fbe72079eb"
+  integrity sha512-HXp47EbE6JzJOmSvCo4OR2n1cUGCTd06sftonl5AxdxvFD81xL61k7InZJtSTzOID+LmWtJBiNd1p6r6i4DgJg==
   dependencies:
     ethers "^5.7.2"
 

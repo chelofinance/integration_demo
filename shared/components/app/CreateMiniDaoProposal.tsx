@@ -6,7 +6,6 @@ import {useWeb3React} from "@web3-react/core";
 import {getNetworkConfig} from "@helpers/network";
 import {getNetworkProvider, hash} from "@helpers/index";
 import {ethers} from "ethers";
-import {DEFAULT_DAO_SETTINGS} from "@shared/constants";
 import {useAppDispatch} from "@redux/store";
 import {onAddProposal} from "@redux/actions";
 import {getMiniDaoCall} from "mini-daos-sdk";
@@ -36,7 +35,7 @@ const CreateMiniDaoProposal = () => {
       const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
       const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
       const votingPeriod = Number(values.votingPeriod) * 60; //minutes
-      const call = await getMiniDaoCall(factory, {
+      const call = await getMiniDaoCall(factory as any, {
         name: values.name,
         modules: [
           {
@@ -47,7 +46,6 @@ const CreateMiniDaoProposal = () => {
               owner: addresses.timelock,
               settings: {
                 name: values.name,
-                lifetime: 0,
                 votingPeriod: votingPeriod.toString(),
                 votingDelay: String(0),
                 quorum: 0,
@@ -73,7 +71,7 @@ const CreateMiniDaoProposal = () => {
           id: proposalId.toString(),
           targets: [call.to],
           values: [0],
-          data: [call.data],
+          data: [call.data.toString()],
           description: values.description,
         })
       );

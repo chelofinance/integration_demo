@@ -8,22 +8,7 @@ import {getNetworkConfig} from "@helpers/network";
 import {attach} from "@helpers/contracts";
 import {getLogs, getNetworkProvider} from "@helpers/index";
 import {onAddMiniDao} from "@redux/actions";
-import {BigNumberish, ContractTransaction, ethers} from "ethers";
-
-function getProposalId(
-  targets: string[],
-  values: BigNumberish[],
-  signature: string,
-  fulldata: string[],
-  eta: string
-) {
-  return ethers.utils.keccak256(
-    ethers.utils.defaultAbiCoder.encode(
-      ["address[]", "uint256[]", "string", "bytes32[], uint256"],
-      [targets, values, signature, fulldata, eta]
-    )
-  );
-}
+import {ContractTransaction} from "ethers";
 
 const ExecuteProposal = () => {
   const [loading, setLoading] = React.useState(false);
@@ -37,6 +22,7 @@ const ExecuteProposal = () => {
     const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
     const factory = attach("DaoFactory", addresses.factory, getNetworkProvider(chainId as any));
 
+    console.log({state: await govBravo.state(values.proposalId)});
     try {
       await (await govBravo.queue(values.proposalId)).wait();
     } catch (err) {

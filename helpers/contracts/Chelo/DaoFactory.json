@@ -23,7 +23,7 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract IAllower",
+        "internalType": "address",
         "name": "allower",
         "type": "address"
       },
@@ -32,6 +32,12 @@
         "internalType": "bytes32",
         "name": "implId",
         "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bool",
+        "name": "isRequired",
+        "type": "bool"
       }
     ],
     "name": "AllowerCreated",
@@ -87,7 +93,7 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "contract IModule",
+        "internalType": "address",
         "name": "module",
         "type": "address"
       },
@@ -167,6 +173,19 @@
   },
   {
     "inputs": [],
+    "name": "DEFAULT_ADMIN_ROLE",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "FEE_CONTROLLER",
     "outputs": [
       {
@@ -220,6 +239,19 @@
   {
     "inputs": [],
     "name": "PAYMENTS_ALLOWER",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "PROPOSER_ROLE",
     "outputs": [
       {
         "internalType": "bytes32",
@@ -328,36 +360,60 @@
             "type": "bytes[]"
           }
         ],
-        "internalType": "struct IDaoFactory.ContractCreationSettings[]",
+        "internalType": "struct IDaoFactory.ContractCreationSetting[]",
         "name": "modulesSettings",
         "type": "tuple[]"
       },
       {
         "components": [
           {
-            "internalType": "address",
-            "name": "deployment",
-            "type": "address"
+            "components": [
+              {
+                "internalType": "address",
+                "name": "deployment",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "implId",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "initialUpdates",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct IDaoFactory.ContractCreationSetting",
+            "name": "allower",
+            "type": "tuple"
           },
           {
-            "internalType": "bytes32",
-            "name": "implId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes[]",
-            "name": "initialUpdates",
-            "type": "bytes[]"
+            "internalType": "bool",
+            "name": "isRequired",
+            "type": "bool"
           }
         ],
-        "internalType": "struct IDaoFactory.ContractCreationSettings[]",
+        "internalType": "struct IDaoFactory.AllowerSetting[]",
         "name": "allowersSettings",
         "type": "tuple[]"
       },
       {
-        "internalType": "string",
-        "name": "name",
-        "type": "string"
+        "components": [
+          {
+            "internalType": "string",
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "internalType": "uint256",
+            "name": "minDelay",
+            "type": "uint256"
+          }
+        ],
+        "internalType": "struct IDaoFactory.BaseWalletSettings",
+        "name": "walletSettings",
+        "type": "tuple"
       }
     ],
     "name": "createMiniDao",
@@ -368,12 +424,12 @@
         "type": "address"
       },
       {
-        "internalType": "contract IModule[]",
+        "internalType": "address[]",
         "name": "",
         "type": "address[]"
       },
       {
-        "internalType": "contract IAllower[]",
+        "internalType": "address[]",
         "name": "",
         "type": "address[]"
       }
@@ -401,7 +457,7 @@
             "type": "bytes[]"
           }
         ],
-        "internalType": "struct IDaoFactory.ContractCreationSettings",
+        "internalType": "struct IDaoFactory.ContractCreationSetting",
         "name": "settings",
         "type": "tuple"
       }
@@ -422,22 +478,34 @@
       {
         "components": [
           {
-            "internalType": "address",
-            "name": "deployment",
-            "type": "address"
+            "components": [
+              {
+                "internalType": "address",
+                "name": "deployment",
+                "type": "address"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "implId",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes[]",
+                "name": "initialUpdates",
+                "type": "bytes[]"
+              }
+            ],
+            "internalType": "struct IDaoFactory.ContractCreationSetting",
+            "name": "allower",
+            "type": "tuple"
           },
           {
-            "internalType": "bytes32",
-            "name": "implId",
-            "type": "bytes32"
-          },
-          {
-            "internalType": "bytes[]",
-            "name": "initialUpdates",
-            "type": "bytes[]"
+            "internalType": "bool",
+            "name": "isRequired",
+            "type": "bool"
           }
         ],
-        "internalType": "struct IDaoFactory.ContractCreationSettings[]",
+        "internalType": "struct IDaoFactory.AllowerSetting[]",
         "name": "settings",
         "type": "tuple[]"
       }
@@ -445,9 +513,14 @@
     "name": "deployAllowers",
     "outputs": [
       {
-        "internalType": "contract IAllower[]",
-        "name": "",
+        "internalType": "address[]",
+        "name": "allowers",
         "type": "address[]"
+      },
+      {
+        "internalType": "bool[]",
+        "name": "isRequired",
+        "type": "bool[]"
       }
     ],
     "stateMutability": "nonpayable",
@@ -473,7 +546,7 @@
             "type": "bytes[]"
           }
         ],
-        "internalType": "struct IDaoFactory.ContractCreationSettings[]",
+        "internalType": "struct IDaoFactory.ContractCreationSetting[]",
         "name": "settings",
         "type": "tuple[]"
       }
@@ -481,7 +554,7 @@
     "name": "deployModules",
     "outputs": [
       {
-        "internalType": "contract IModule[]",
+        "internalType": "address[]",
         "name": "",
         "type": "address[]"
       }

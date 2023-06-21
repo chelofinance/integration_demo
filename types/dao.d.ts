@@ -133,6 +133,7 @@ type MiniDaoProposal = {
   description: string;
   executed: boolean;
   status: number;
+  timelock: boolean;
 };
 
 interface MiniDAO extends DAO {

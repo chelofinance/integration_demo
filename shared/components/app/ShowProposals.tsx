@@ -1,6 +1,5 @@
 //import React from 'react';
 import {useAppSelector, useAppDispatch} from "@redux/store";
-import Link from "next/link";
 import {useRouter} from "next/router";
 import {getNetworkProvider} from "@helpers/index";
 import {onAddMiniDaoProposal, onAddProposal} from "@redux/actions";
@@ -8,6 +7,7 @@ import {getNetworkConfig} from "@helpers/network";
 import {attach} from "@helpers/contracts";
 import {hash} from "mini-daos-sdk";
 import {useWeb3React} from "@web3-react/core";
+import {ethers} from "ethers";
 
 const proposalState = {
   0: "Pending",
@@ -94,19 +94,12 @@ const ShowProposals: React.FC = () => {
       const description = "Cancel mini dao proposal (Revoke)";
 
       const proposalId = await govBravo.callStatic.propose(
-        [miniDao.id],
+        [miniDao.modules[0].address],
         [0],
         [""],
         [calldata],
         description
       );
-
-      //const id = await miniDaoContract.hashProposal(...args);
-      //console.log({
-      //hash: id,
-      //state: await miniDaoContract.state(id),
-      //});
-      //return;
 
       await govBravo.propose([miniDao.modules[0].address], [0], [""], [calldata], description);
 
@@ -122,6 +115,77 @@ const ShowProposals: React.FC = () => {
     } catch (err) {
       console.log("ERROR", err);
     }
+  };
+
+  const handleWithdrawFunds = async () => {
+    try {
+      const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
+      const miniDaoContract = attach("BaseWallet", miniDao.id, provider.getSigner());
+      const mockToken = attach("ERC20", addresses.mockToken, provider.getSigner());
+
+      const balance = (await mockToken.balanceOf(addresses.timelock)).toNumber();
+      const args = [
+        mockToken.address,
+        0,
+        mockToken.interface.encodeFunctionData("transfer", [addresses.timelock, balance]),
+        ethers.constants.HashZero,
+        ethers.constants.HashZero,
+        await miniDaoContract.getMinDelay(),
+      ];
+      const calldata = miniDaoContract.interface.encodeFunctionData("schedule", args);
+      const description = "Withdraw funds";
+
+      const proposalId = await govBravo.callStatic.propose(
+        [miniDao.id],
+        [0],
+        [""],
+        [calldata],
+        description
+      );
+
+      await govBravo.propose([miniDao.modules[0].address], [0], [""], [calldata], description);
+
+      dispatch(
+        onAddProposal({
+          id: proposalId.toString(),
+          targets: [miniDao.id],
+          values: [0],
+          data: [calldata],
+          description,
+          timelock: true,
+        })
+      );
+    } catch (err) {
+      console.log("ERROR", err);
+    }
+  };
+
+  const handleVote = async (proposal: MiniDaoProposal) => {
+    const miniDaoContract = attach("DaoModule", miniDao.modules[0].address, provider.getSigner());
+
+    await miniDaoContract.castVote(proposal.id, 1);
+  };
+
+  const handleTimelockExecute = async (prop: MiniDaoProposal) => {
+    const govBravo = attach("GovernorBravoDelegate", addresses.govBravo, provider.getSigner());
+    const miniDaoContract = attach("BaseWallet", miniDao.id, provider.getSigner());
+    const mockToken = attach("ERC20", addresses.mockToken, provider.getSigner());
+
+    const args = [
+      mockToken.address,
+      0,
+      mockToken.interface.encodeFunctionData("transfer", [
+        addresses.timelock,
+        await mockToken.balanceOf(addresses.timelock),
+      ]),
+      ethers.constants.HashZero,
+      0,
+      await miniDaoContract.getMinDelay(),
+    ];
+    const calldata = miniDaoContract.interface.encodeFunctionData("execute", args);
+    const description = "Withdraw funds";
+
+    await govBravo.propose([miniDao.modules[0].address], [0], [""], [calldata], description);
   };
 
   return (
@@ -150,30 +214,42 @@ const ShowProposals: React.FC = () => {
             <span className="">{proposalState[proposal.status]}</span>
           </div>
 
-          <div className="flex justify-between mt-4">
-            <button
-              className="px-4 py-2 bg-blue-600 text-white rounded"
-              onClick={() => handleRevoke(proposal)}
-            >
-              Revoke
-            </button>
-            <button
-              className="px-4 py-2 bg-green-600 text-white rounded"
-              onClick={() => {
-                /* Implement vote action here */
-              }}
-            >
-              Vote
-            </button>
-          </div>
+          {proposal.timelock ? (
+            <div className="flex justify-between mt-4">
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={() => handleTimelockExecute(proposal)}
+              >
+                Execute
+              </button>
+            </div>
+          ) : (
+            <div className="flex justify-between mt-4">
+              <button
+                className="px-4 py-2 bg-blue-600 text-white rounded"
+                onClick={() => handleRevoke(proposal)}
+              >
+                Revoke
+              </button>
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded"
+                onClick={() => handleVote(proposal)}
+              >
+                {proposal.status === 4 ? "Queue" : "Vote"}
+              </button>
+            </div>
+          )}
         </div>
       ))}
-      <button
-        className="px-4 py-2 bg-blue-600 text-white rounded mt-4"
-        onClick={handleLoadProposals}
-      >
-        Load Proposals
-      </button>
+
+      <div className="flex justify-between mt-4 w-full">
+        <button className="px-4 py-2 bg-blue-600 text-white rounded" onClick={handleLoadProposals}>
+          Load Proposals
+        </button>
+        <button className="px-4 py-2 bg-green-600 text-white rounded" onClick={handleWithdrawFunds}>
+          Withdraw Funds
+        </button>
+      </div>
     </div>
   );
 };

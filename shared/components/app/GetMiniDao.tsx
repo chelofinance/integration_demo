@@ -43,35 +43,42 @@ const GetMiniDao: React.FC = () => {
 
           // If the event is BaseWalletCreated or ModuleCreated, console.log it
           if (decodedLog.name === "BaseWalletCreated" || decodedLog.name === "ModuleCreated") {
-            return decodedLog;
+            return {
+              log: decodedLog,
+              blockNumber: log.blockNumber,
+            };
           }
           return null;
         })
         .filter(Boolean)
-        .reduce((acc, cur) => {
-          if (cur.name === "BaseWalletCreated")
-            return [
-              ...acc,
-              {
-                baseWallet: cur.args.wallet,
-                blockNumber: values.blockHeight,
-                modules: [] as {address: string}[],
+        .reduce((acc, {log, blockNumber}) => {
+          console.log({log, blockNumber});
+          if (log.name === "BaseWalletCreated")
+            return {
+              [blockNumber]: {
+                baseWallet: log.args.wallet,
+                modules: acc[blockNumber].modules || [],
               },
-            ];
+            };
+          else {
+            const modInfo = {address: log.args.module};
+            return {
+              [blockNumber]: {
+                ...acc[blockNumber],
+                modules: acc[blockNumber]?.modules
+                  ? acc[blockNumber].modules.push(modInfo)
+                  : [modInfo],
+              },
+            };
+          }
+        }, {} as Record<string, {baseWallet: string; blockNumber: number; modules: {address: string}[]}>);
 
-          const last = acc.length - 1;
-          acc[last].modules.push({address: cur.args.module});
-
-          return acc;
-        }, [] as {baseWallet: string; blockNumber: number; modules: {address: string}[]}[]);
-
-      for (let mini of decoded) {
-        console.log(mini);
+      for (let [blockNumber, info] of Object.entries(decoded)) {
         dispatch(
           onAddMiniDao({
-            baseWallet: mini.baseWallet,
-            modules: mini.modules,
-            blockNumber: mini.blockNumber,
+            baseWallet: info.baseWallet,
+            modules: info.modules,
+            blockNumber,
           } as any)
         );
       }

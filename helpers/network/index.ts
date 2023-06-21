@@ -137,12 +137,12 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: `https://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     providerWs: `wss://polygon-mumbai.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_MUMBAI_PROVIDER}`,
     addresses: {
-      factory: "0x953c0C38303C7fDb360b8cF9B4f4522754f24A70",
-      registry: "0xcFEB3e5275cFe3cF035Dcc97a753E88c0Ae50bE7",
-      token: "0x1Af2228b3d6506B40EeC41e9772b2Cd5aa734F04",
-      comp: "0x3993873B00DfbE132bB08C1d21ABa9FB5BFd1aF9",
-      timelock: "0xd2cF55F3ea835c329100914e09db1d05A1E8662F",
-      govBravo: "0x07Fe9877Fb1753595cF0762edc73e14EAEf871a6",
+      factory: "0x41c68CC281b916c9aF26A23Ae217C96b09b3B85f",
+      registry: "0xBdD4bE155069f54a3eAe7865f81557C29812A7d7",
+      token: "0xa1ecDD43CEdDf022270E700E8a8ee539642e3684",
+      comp: "0xD090302D80b8743b58A5bDd7588c89c91dCF9eC1",
+      timelock: "0x3d021178Ed39E7570BdE34b26DFDC6F23A4Dc762",
+      govBravo: "0x9756A8572693Ef509257089F6Afaf4B73C8472a3",
       mockToken: "0x528F13987d5F95c469834E37C1Bb6cdEE005D4dF",
     },
     endpoints: {
@@ -169,13 +169,13 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     provider: "http://127.0.0.1:8545/",
     providerWs: "wss://127.0.0.1:8545/",
     addresses: {
-      factory: "0x066A4d1528B97AD6ECB72FD623302Ed25Df50732",
-      registry: "0xDE3cA147D00D8f345Be4fF01EC17a96D77a1a56C",
-      token: "0x0c4B7c58B796b4Ad53A1471d24d0848617D689Cd",
-      comp: "0x92BC12372c0a63dF5b42E8411bB17A3521666559",
-      timelock: "0xAcF3f17373bB379f9aB89538080A3b615356a20D",
-      govBravo: "0x98423D01dAfcAB43C858cA31b19e55325782E1e0",
-      mockToken: "0x7c0d361b47570850Eefcf29A4EBe8827aB7A9AeB",
+      factory: "0xc0cC8430814995C7d5C28eaAeE41A7c24B727681",
+      registry: "0x7AE799Fc0532Ff0C35aAf53875dFc647c9Af4b78",
+      token: "0x9E1B23B6E8F1447345398A0ADBF5DdAbc1FD8190",
+      comp: "0x73F328e66d83782eA60769Fc1165857b2a265Ef9",
+      timelock: "0x5028E3D43487DAC3F564196F4B22fE639805f263",
+      govBravo: "0xC4b7Bc78A490f089d458dB80c5Be00DB2e5FEAc7",
+      mockToken: "0xDe9944A60400486B1D91ee70d69AcBB1B641D17e",
     },
     endpoints: {
       chelo: "http://localhost:8000/subgraphs/name/rcontre360/talent_subgraph",
@@ -197,6 +197,8 @@ export const networkConfigs: Record<NetworkName, NetworkConfig> = {
     },
   },
 };
+
+//https://www.tally.xyz/gov/minitestchelo
 
 const idToNetwork: Record<SupportedNetworks, string> = {
   137: "polygon",
