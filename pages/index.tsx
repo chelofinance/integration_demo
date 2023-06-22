@@ -6,17 +6,20 @@ import ShowMiniDao from "@shared/components/app/ShowMiniDao";
 import BalanceCard from "@shared/components/app/AddressBalance";
 import {getNetworkConfig} from "@helpers/network";
 import {useWeb3React} from "@web3-react/core";
+import {ethers} from "ethers";
 
 const MyPage = () => {
   const {chainId} = useWeb3React();
-  const {addresses} = getNetworkConfig(chainId as any);
+  const addresses = getNetworkConfig(chainId as any)?.addresses || {
+    timelock: ethers.constants.AddressZero,
+  };
 
   return (
     <div className="flex flex-col">
       <div className="absolute top-3 left-10">
         <BalanceCard userAddress={addresses.timelock} />
       </div>
-      <div className="flex w-full pt-5">
+      <div className="flex w-full pt-10">
         <div className="w-1/2 p-4">
           <CreateMiniDaoProposal />
         </div>

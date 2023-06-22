@@ -62,10 +62,11 @@ export const onAddMiniDaoProposal = createAsyncThunk<
     description: string;
     dao: string;
     status: number;
+    isWallet: boolean;
   },
   {rejectValue: StateErrorType}
 >("dao/addProposal", async (args) => {
-  const {id, targets, data, values, description, dao, status} = args;
+  const {id, targets, data, values, description, dao, status, isWallet} = args;
   const proposal: MiniDaoProposal = {
     id,
     targets,
@@ -73,6 +74,7 @@ export const onAddMiniDaoProposal = createAsyncThunk<
     values,
     description,
     executed: false,
+    isWallet,
     status,
   };
 

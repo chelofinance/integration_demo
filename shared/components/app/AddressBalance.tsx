@@ -1,17 +1,20 @@
 import React, {useState} from "react";
-import {BigNumber} from "ethers";
+import {BigNumber, ethers} from "ethers";
 import {useWeb3React} from "@web3-react/core";
 import {getNetworkConfig} from "@helpers/network";
 import {attach} from "@helpers/contracts";
 import EthAddress from "../common/EthAddress";
+import {getNetworkProvider} from "@helpers/index";
 
 const BalanceCard = ({userAddress}) => {
   const {chainId} = useWeb3React();
   const [balance, setBalance] = useState("0");
-  const {addresses} = getNetworkConfig(chainId as any);
+  const addresses = getNetworkConfig(chainId as any)?.addresses || {
+    mockToken: ethers.constants.AddressZero,
+  };
 
   const updateBalance = async () => {
-    const tokenContract = attach("ERC20", addresses.mockToken);
+    const tokenContract = attach("ERC20", addresses.mockToken, getNetworkProvider(chainId as any));
     const newBalance: BigNumber = await tokenContract.balanceOf(userAddress);
     setBalance(newBalance.toString());
   };

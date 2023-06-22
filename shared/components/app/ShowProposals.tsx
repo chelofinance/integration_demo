@@ -32,50 +32,104 @@ const ShowProposals: React.FC = () => {
   const miniDao = mini_daos.find((mini) => mini.id === router.query.mini_dao);
   const proposals = miniDao?.proposals.map((prop) => ({id: prop.id.toString(), ...prop}));
 
-  const handleLoadProposals = async () => {
+  const moduleProposals = async () => {
     const dao = attach(
       "DaoModule",
       miniDao.modules[0].address,
       getNetworkProvider(account.networkId)
     );
+    const latestBlockNumber = await dao.provider.getBlockNumber();
+    const logs = await dao.provider.getLogs({
+      fromBlock: Number(miniDao.creationBlock),
+      toBlock: latestBlockNumber,
+      address: miniDao.modules[0].address,
+    });
 
+    const decoded = logs
+      .map((log) => {
+        try {
+          const decodedLog = dao.interface.parseLog(log);
+
+          // If the event is ProposalCreated, return it
+          if (decodedLog.name === "ProposalCreated") {
+            return decodedLog;
+          }
+        } catch (err) {}
+        return null;
+      })
+      .filter(Boolean);
+
+    return decoded.map((log) => ({
+      id: log.args.proposalId.toString(),
+      target: log.args.targets[0],
+      description: log.args.description,
+      calldata: log.args.calldatas[0],
+      value: 0,
+      isWallet: false,
+    }));
+  };
+
+  const walletProposals = async () => {
+    const wallet = attach("BaseWallet", miniDao.id, getNetworkProvider(account.networkId));
+    const latestBlockNumber = await wallet.provider.getBlockNumber();
+    const logs = await wallet.provider.getLogs({
+      fromBlock: Number(miniDao.creationBlock),
+      toBlock: latestBlockNumber,
+      address: miniDao.id,
+    });
+
+    const decoded = logs
+      .map((log) => {
+        try {
+          const decodedLog = wallet.interface.parseLog(log);
+
+          console.log(decodedLog);
+          // If the event is ProposalCreated, return it
+          if (decodedLog.name === "CallScheduled") {
+            return decodedLog;
+          }
+        } catch (err) {}
+        return null;
+      })
+      .filter(Boolean);
+
+    return decoded.map((log) => ({
+      target: log.args.target,
+      description: "",
+      calldata: log.args.data,
+      value: 0,
+      id: hash(log.args.target),
+      isWallet: true,
+    }));
+  };
+
+  const handleLoadProposals = async () => {
     try {
-      const latestBlockNumber = await dao.provider.getBlockNumber();
-      const logs = await dao.provider.getLogs({
-        fromBlock: Number(miniDao.creationBlock),
-        toBlock: latestBlockNumber,
-        address: miniDao.modules[0].address,
-      });
-
-      const decoded = logs
-        .map((log) => {
-          try {
-            const decodedLog = dao.interface.parseLog(log);
-
-            // If the event is ProposalCreated, return it
-            if (decodedLog.name === "ProposalCreated") {
-              return decodedLog;
-            }
-          } catch (err) {}
-          return null;
-        })
-        .filter(Boolean);
+      const dao = attach(
+        "DaoModule",
+        miniDao.modules[0].address,
+        getNetworkProvider(account.networkId)
+      );
+      const moduleLogs = await moduleProposals();
+      const walletLogs = await walletProposals();
+      const decoded = moduleLogs.concat(walletLogs);
 
       for (let proposalLog of decoded) {
-        const description = proposalLog.args.description;
-        const calldata = proposalLog.args.calldatas[0];
+        const description = proposalLog.description;
+        const calldata = proposalLog.calldata;
         const miniDao = mini_daos.find((mini) => mini.id === router.query.mini_dao);
-        const id = proposalLog.args.proposalId.toString();
-        const status: number = await dao.state(id);
+        const id = proposalLog.id;
+        const status: number = proposalLog.isWallet ? 4 : await dao.state(id);
 
         dispatch(
           onAddMiniDaoProposal({
-            id: proposalLog.args.proposalId.toString(),
-            targets: [proposalLog.args.targets[0]],
+            id: proposalLog.id,
+            targets: [proposalLog.target],
             data: [calldata],
             values: [0],
             description: description,
             dao: miniDao.id,
+            isWallet: proposalLog.isWallet,
             status,
           })
         );
@@ -123,7 +177,7 @@ const ShowProposals: React.FC = () => {
       const miniDaoContract = attach("BaseWallet", miniDao.id, provider.getSigner());
       const mockToken = attach("ERC20", addresses.mockToken, provider.getSigner());
 
-      const balance = (await mockToken.balanceOf(addresses.timelock)).toNumber();
+      const balance = (await mockToken.balanceOf(miniDao.id)).toString();
       const args = [
         mockToken.address,
         0,
@@ -143,7 +197,7 @@ const ShowProposals: React.FC = () => {
         description
       );
 
-      await govBravo.propose([miniDao.modules[0].address], [0], [""], [calldata], description);
+      await govBravo.propose([miniDao.id], [0], [""], [calldata], description);
 
       dispatch(
         onAddProposal({
@@ -171,21 +225,15 @@ const ShowProposals: React.FC = () => {
     const miniDaoContract = attach("BaseWallet", miniDao.id, provider.getSigner());
     const mockToken = attach("ERC20", addresses.mockToken, provider.getSigner());
 
+    const balance = (await mockToken.balanceOf(miniDao.id)).toString();
     const args = [
       mockToken.address,
       0,
-      mockToken.interface.encodeFunctionData("transfer", [
-        addresses.timelock,
-        await mockToken.balanceOf(addresses.timelock),
-      ]),
+      mockToken.interface.encodeFunctionData("transfer", [addresses.timelock, balance]),
       ethers.constants.HashZero,
-      0,
-      await miniDaoContract.getMinDelay(),
+      ethers.constants.HashZero,
     ];
-    const calldata = miniDaoContract.interface.encodeFunctionData("execute", args);
-    const description = "Withdraw funds";
-
-    await govBravo.propose([miniDao.modules[0].address], [0], [""], [calldata], description);
+    await miniDaoContract.execute(...args);
   };
 
   return (
@@ -214,7 +262,7 @@ const ShowProposals: React.FC = () => {
             <span className="">{proposalState[proposal.status]}</span>
           </div>
 
-          {proposal.timelock ? (
+          {proposal.isWallet ? (
             <div className="flex justify-between mt-4">
               <button
                 className="px-4 py-2 bg-blue-600 text-white rounded"
