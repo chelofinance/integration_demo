@@ -11,7 +11,7 @@ export const onAddProposal = createAsyncThunk<
     data: string[];
     values: number[];
     description: string;
-    timelock: boolean;
+    timelock?: boolean;
   },
   {rejectValue: StateErrorType}
 >(actions.CREATE_PROPOSAL, async (args) => {
@@ -24,7 +24,6 @@ export const onAddProposal = createAsyncThunk<
     description,
     executed: false,
     status: 0,
-    timelock,
   };
   return proposal;
 });
@@ -62,7 +61,7 @@ export const onAddMiniDaoProposal = createAsyncThunk<
     description: string;
     dao: string;
     status: number;
-    isWallet: boolean;
+    isWallet?: boolean;
   },
   {rejectValue: StateErrorType}
 >("dao/addProposal", async (args) => {
