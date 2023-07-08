@@ -25,6 +25,7 @@ const CreateMiniDaoProposal = () => {
     const comp = attach("Comp", addresses.comp, provider.getSigner());
     const delegated = await comp.delegates(account);
 
+    console.log({delegated});
     if (delegated === ethers.constants.AddressZero) {
       await (await comp.delegate(account)).wait();
     }
