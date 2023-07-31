@@ -1,4 +1,5 @@
 import CreateMiniDaoProposal from "@shared/components/app/CreateMiniDaoProposal";
+import CreateStakingPool from "@shared/components/app/CreateStakingPool";
 import CastVote from "@shared/components/app/CastVote";
 import ExecuteProposal from "@shared/components/app/ExecuteProposal";
 import GetMiniDao from "@shared/components/app/GetMiniDao";
@@ -19,14 +20,15 @@ const MyPage = () => {
       <div className="absolute top-3 left-10">
         <BalanceCard userAddress={addresses.timelock} />
       </div>
-      <div className="flex w-full pt-10">
-        <div className="w-1/2 p-4">
+      <div className="flex justify-between w-full pt-10">
+        <div className="">
           <CreateMiniDaoProposal />
         </div>
-        <div className="w-1/2 p-4">
-          <CastVote />
+        <div className="">
+          <CreateStakingPool />
         </div>
-        <div className="w-1/2 p-4">
+        <div className="flex flex-col ">
+          <CastVote />
           <ExecuteProposal />
         </div>
       </div>
